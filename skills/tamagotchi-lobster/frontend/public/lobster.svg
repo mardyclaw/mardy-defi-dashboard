@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Simple lobster icon for favicon -->
+  <rect width="128" height="128" fill="#0a2463"/>
+  <g transform="translate(24, 32)">
+    <!-- Body -->
+    <rect x="16" y="16" width="48" height="32" fill="#c93a2b"/>
+    <!-- Head -->
+    <rect x="8" y="24" width="16" height="16" fill="#e74c3c"/>
+    <!-- Eyes -->
+    <rect x="8" y="24" width="8" height="8" fill="#2c3e50"/>
+    <rect x="12" y="28" width="4" height="4" fill="#ecf0f1"/>
+    <!-- Tail -->
+    <rect x="64" y="24" width="16" height="16" fill="#c93a2b"/>
+    <rect x="80" y="28" width="8" height="8" fill="#a93226"/>
+    <!-- Claws -->
+    <rect x="0" y="40" width="16" height="8" fill="#e74c3c"/>
+    <rect x="64" y="40" width="16" height="8" fill="#e74c3c"/>
+  </g>
+</svg>

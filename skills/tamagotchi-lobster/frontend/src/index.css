@@ -1,0 +1,88 @@
+:root {
+  --ocean-deep: #0a2463;
+  --ocean-mid: #1e5f8c;
+  --ocean-light: #3e92cc;
+  --ocean-foam: #d8e9f0;
+  --lobster-red: #e74c3c;
+  --lobster-dark: #c93a2b;
+  --accent-gold: #f39c12;
+  --text-light: #ecf0f1;
+  --text-dark: #2c3e50;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', monospace;
+  background: linear-gradient(180deg, var(--ocean-light) 0%, var(--ocean-deep) 100%);
+  color: var(--text-light);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+button {
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* Pixel art rendering */
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes wave {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Bubbles background */
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  animation: rise 15s infinite ease-in;
+}
+
+@keyframes rise {
+  to {
+    bottom: 110vh;
+    transform: translateX(100px);
+  }
+}

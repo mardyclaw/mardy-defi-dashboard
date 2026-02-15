@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Monitor 🦞</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Monaco', monospace;
+            background: #0a0e27;
+            color: #e0e6ff;
+            padding: 16px;
+            min-height: 100vh;
+        }
+        .header {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .card {
+            border: 2px solid #ff6b35;
+            border-radius: 6px;
+            padding: 16px;
+            background: #1a1f3a;
+        }
+        .card.active {
+            border-color: #00d9ff;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
+        }
+        .emoji { font-size: 24px; margin-bottom: 8px; }
+        .name { color: #00d9ff; font-weight: bold; margin-bottom: 6px; }
+        .status {
+            font-size: 12px;
+            color: #9ca3af;
+            margin: 6px 0;
+            padding: 4px 8px;
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 3px;
+        }
+        .status.idle { color: #9ca3af; background: rgba(155, 163, 175, 0.1); }
+        .status.running { color: #4ade80; background: rgba(74, 222, 128, 0.1); animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .progress { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 8px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #00d9ff, #ff6b35); width: 0%; animation: progress 2s infinite; }
+        @keyframes progress { 0%, 100% { width: 0%; } 50% { width: 100%; } }
+        .footer { font-size: 11px; color: #666; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">🦞 AGENT MONITOR</div>
+    
+    <div class="grid">
+        <div class="card" id="mardy">
+            <div class="emoji">🧠</div>
+            <div class="name">MARDY</div>
+            <div class="status idle">Orchestrator • Ready</div>
+        </div>
+        
+        <div class="card" id="sage">
+            <div class="emoji">🔬</div>
+            <div class="name">Sage</div>
+            <div class="status idle">Researcher • Idle</div>
+            <div class="progress"><div class="progress-bar"></div></div>
+        </div>
+        
+        <div class="card" id="claw">
+            <div class="emoji">🛠️</div>
+            <div class="name">Claw</div>
+            <div class="status idle">Developer • Idle</div>
+            <div class="progress"><div class="progress-bar"></div></div>
+        </div>
+        
+        <div class="card" id="echo">
+            <div class="emoji">🤝</div>
+            <div class="name">Echo</div>
+            <div class="status idle">Community • Idle</div>
+            <div class="progress"><div class="progress-bar"></div></div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        Tailscale Serve • Refresh to update • Gateway running on 192.168.0.109:18789
+    </div>
+    
+    <script>
+        // Simulate agent activity for demo
+        const agents = ['sage', 'claw', 'echo'];
+        setInterval(() => {
+            agents.forEach(agent => {
+                const card = document.getElementById(agent);
+                if (Math.random() > 0.7) {
+                    card.classList.add('active');
+                    card.querySelector('.status').textContent = 'Running task...';
+                    card.querySelector('.status').classList.add('running');
+                } else {
+                    card.classList.remove('active');
+                    card.querySelector('.status').textContent = agent.charAt(0).toUpperCase() + agent.slice(1) + ' • Idle';
+                    card.querySelector('.status').classList.remove('running');
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

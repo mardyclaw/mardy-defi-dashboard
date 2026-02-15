@@ -1,0 +1,46 @@
+.ocean-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 100px;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,100 L0,100 Z" fill="%23ffffff" opacity="0.1"/></svg>');
+  animation: wave-animation 20s linear infinite;
+}
+
+.wave1 {
+  opacity: 0.3;
+  animation-duration: 25s;
+}
+
+.wave2 {
+  opacity: 0.2;
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.wave3 {
+  opacity: 0.15;
+  animation-duration: 35s;
+  animation-delay: -10s;
+}
+
+@keyframes wave-animation {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}

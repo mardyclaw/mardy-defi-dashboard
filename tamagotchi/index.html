@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦞 Mardy's Cyber Lab</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Matrix rain background -->
+        <canvas id="matrix-bg"></canvas>
+        
+        <!-- Header -->
+        <header class="cyber-header">
+            <div class="logo">
+                <span class="logo-icon">🦞</span>
+                <span class="logo-text">MARDY'S CYBER LAB</span>
+                <span class="status-indicator" id="connection-status">●</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-chip">
+                    <span class="stat-label">CPU</span>
+                    <span class="stat-value" id="header-cpu">--</span>
+                </div>
+                <div class="stat-chip">
+                    <span class="stat-label">MEM</span>
+                    <span class="stat-value" id="header-mem">--</span>
+                </div>
+                <div class="stat-chip">
+                    <span class="stat-label">UP</span>
+                    <span class="stat-value" id="header-uptime">--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard">
+            <!-- Pet Zone -->
+            <section class="pet-zone">
+                <canvas id="pet-canvas"></canvas>
+                <div class="pet-info">
+                    <div class="pet-name">MARDY</div>
+                    <div class="pet-status" id="pet-status">Monitoring systems...</div>
+                </div>
+            </section>
+
+            <!-- Data Panels -->
+            <div class="panels-grid">
+                <!-- Wallet Panel -->
+                <div class="panel wallet-panel">
+                    <div class="panel-header">
+                        <span class="panel-icon">💰</span>
+                        <span class="panel-title">WALLET</span>
+                        <button class="refresh-btn" data-action="refresh-wallet">↻</button>
+                    </div>
+                    <div class="panel-content">
+                        <div class="big-number" id="wallet-balance">0.000</div>
+                        <div class="unit">ETH</div>
+                        <div class="sub-info" id="wallet-address">Loading...</div>
+                        <div class="panel-actions">
+                            <button class="cyber-btn" data-action="check-wallet">Check Balance</button>
+                            <button class="cyber-btn" data-action="browse-marketplace">Browse ACP</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sessions Panel -->
+                <div class="panel sessions-panel">
+                    <div class="panel-header">
+                        <span class="panel-icon">📡</span>
+                        <span class="panel-title">SESSIONS</span>
+                        <button class="refresh-btn" data-action="refresh-sessions">↻</button>
+                    </div>
+                    <div class="panel-content">
+                        <div class="stats-row">
+                            <div class="mini-stat">
+                                <div class="mini-value" id="active-sessions">0</div>
+                                <div class="mini-label">Active</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-value" id="gateway-status">--</div>
+                                <div class="mini-label">Gateway</div>
+                            </div>
+                        </div>
+                        <div class="process-list" id="process-list">
+                            <div class="loading">Loading processes...</div>
+                        </div>
+                        <div class="panel-actions">
+                            <button class="cyber-btn" data-action="view-sessions">View Details</button>
+                            <button class="cyber-btn secondary" data-action="restart-gateway">Restart GW</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Panel -->
+                <div class="panel system-panel">
+                    <div class="panel-header">
+                        <span class="panel-icon">🖥️</span>
+                        <span class="panel-title">SYSTEM</span>
+                        <button class="refresh-btn" data-action="refresh-system">↻</button>
+                    </div>
+                    <div class="panel-content">
+                        <div class="gauge-container">
+                            <div class="gauge" id="cpu-gauge">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+                                    <circle class="gauge-fill" cx="50" cy="50" r="40" id="cpu-arc"/>
+                                </svg>
+                                <div class="gauge-value" id="cpu-value">0%</div>
+                                <div class="gauge-label">CPU</div>
+                            </div>
+                            <div class="gauge" id="mem-gauge">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+                                    <circle class="gauge-fill" cx="50" cy="50" r="40" id="mem-arc"/>
+                                </svg>
+                                <div class="gauge-value" id="mem-value">0%</div>
+                                <div class="gauge-label">MEM</div>
+                            </div>
+                            <div class="gauge" id="disk-gauge">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+                                    <circle class="gauge-fill" cx="50" cy="50" r="40" id="disk-arc"/>
+                                </svg>
+                                <div class="gauge-value" id="disk-value">0%</div>
+                                <div class="gauge-label">DISK</div>
+                            </div>
+                        </div>
+                        <div class="system-details" id="system-details">
+                            <div class="detail-row"><span>Network:</span><span id="network-status">--</span></div>
+                            <div class="detail-row"><span>Temp:</span><span id="sys-temp">--</span></div>
+                            <div class="detail-row"><span>Load:</span><span id="sys-load">--</span></div>
+                        </div>
+                        <div class="panel-actions">
+                            <button class="cyber-btn" data-action="system-health">Full Health</button>
+                            <button class="cyber-btn secondary" data-action="top-processes">Top Procs</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Command Panel -->
+                <div class="panel command-panel">
+                    <div class="panel-header">
+                        <span class="panel-icon">⚡</span>
+                        <span class="panel-title">COMMANDS</span>
+                    </div>
+                    <div class="panel-content">
+                        <div class="command-grid">
+                            <button class="command-btn" data-action="marketplace-search">
+                                <span class="cmd-icon">🔍</span>
+                                <span class="cmd-label">Search ACP</span>
+                            </button>
+                            <button class="command-btn" data-action="check-wallet">
+                                <span class="cmd-icon">💎</span>
+                                <span class="cmd-label">Wallet</span>
+                            </button>
+                            <button class="command-btn" data-action="view-logs">
+                                <span class="cmd-icon">📋</span>
+                                <span class="cmd-label">Logs</span>
+                            </button>
+                            <button class="command-btn" data-action="run-task">
+                                <span class="cmd-icon">🚀</span>
+                                <span class="cmd-label">Run Task</span>
+                            </button>
+                            <button class="command-btn" data-action="whoami">
+                                <span class="cmd-icon">🤖</span>
+                                <span class="cmd-label">Who Am I</span>
+                            </button>
+                            <button class="command-btn" data-action="gateway-status">
+                                <span class="cmd-icon">🌐</span>
+                                <span class="cmd-label">GW Status</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Log -->
+            <section class="activity-section">
+                <div class="panel activity-panel">
+                    <div class="panel-header">
+                        <span class="panel-icon">📊</span>
+                        <span class="panel-title">ACTIVITY LOG</span>
+                        <button class="refresh-btn" data-action="refresh-activity">↻</button>
+                    </div>
+                    <div class="panel-content">
+                        <div class="activity-log" id="activity-log">
+                            <div class="log-entry">
+                                <span class="log-time">--:--:--</span>
+                                <span class="log-type system">INIT</span>
+                                <span class="log-msg">Dashboard initializing...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alerts Banner -->
+            <div class="alerts-banner" id="alerts-banner" style="display: none;">
+                <span class="alert-icon">⚠️</span>
+                <span class="alert-message" id="alert-message"></span>
+                <button class="alert-close" onclick="this.parentElement.style.display='none'">×</button>
+            </div>
+        </main>
+
+        <!-- Modal -->
+        <div class="modal" id="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="modal-title" id="modal-title">Modal</span>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Dynamic content -->
+                </div>
+                <div class="modal-actions" id="modal-actions">
+                    <!-- Dynamic buttons -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div class="toast-container" id="toast-container"></div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/commands.js"></script>
+    <script>
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initAPI();
+            initUI();
+            initGame();
+            initCommands();
+            
+            // Start data polling
+            startDataPolling();
+        });
+    </script>
+</body>
+</html>

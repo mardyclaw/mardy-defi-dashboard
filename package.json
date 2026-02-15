@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@coinbase/coinbase-sdk": "^0.25.0",
+    "ethers": "^6.16.0"
+  },
+  "devDependencies": {
+    "solc": "^0.8.33"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "path": "/tamagotchi",
+      "target": "http://localhost:18790",
+      "description": "Tamagotchi Lobster Dashboard"
+    }
+  ],
+  "websockets": [
+    {
+      "path": "/tamagotchi/ws",
+      "target": "ws://localhost:18790/ws",
+      "description": "Tamagotchi real-time data"
+    }
+  ]
+}

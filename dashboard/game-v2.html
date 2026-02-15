@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mardy's Village - Game</title>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.85.0/dist/phaser.js"></script>
+<style>
+* { margin: 0; padding: 0; }
+body { background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+#game { width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<div id="game"></div>
+
+<script>
+const config = {
+  type: Phaser.AUTO,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 1280,
+    height: 720
+  },
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 0 },
+      debug: false
+    }
+  },
+  render: {
+    pixelArt: true,
+    antialias: false
+  },
+  scene: GameScene
+};
+
+const game = new Phaser.Game(config);
+
+class GameScene extends Phaser.Scene {
+  constructor() {
+    super();
+  }
+
+  preload() {
+    // We'll create graphics instead of loading external assets
+  }
+
+  create() {
+    // Create grass background
+    const graphics = this.make.graphics({ x: 0, y: 0, add: false });
+    graphics.fillStyle(0x7cd896);
+    graphics.fillRect(0, 0, 1280, 720);
+    graphics.generateTexture('grass', 1280, 720);
+    graphics.destroy();
+
+    this.add.image(640, 360, 'grass');
+
+    // Draw grass pattern
+    const grass2 = this.make.graphics({ x: 0, y: 0, add: false });
+    grass2.fillStyle(0x6bc986);
+    for (let x = 0; x < 1280; x += 30) {
+      for (let y = 0; y < 720; y += 30) {
+        if ((x / 30 + y / 30) % 2 === 0) {
+          grass2.fillRect(x, y, 30, 30);
+        }
+      }
+    }
+    grass2.generateTexture('grassPattern', 1280, 720);
+    grass2.destroy();
+    this.add.image(640, 360, 'grassPattern');
+
+    // Create house sprite
+    this.createHouseTexture('house1', 0xFFB6C1, 0x8B4513);
+    this.createHouseTexture('house2', 0xFFB6C1, 0x8B4513);
+    this.createHouseTexture('house3', 0xFFB6C1, 0x8B4513);
+
+    // Create lobster sprite with animation frames
+    this.createLobsterTextures();
+
+    // Houses
+    this.houses = [
+      { x: 150, y: 120, name: 'Study', visited: false },
+      { x: 640, y: 120, name: 'Market', visited: false },
+      { x: 1130, y: 120, name: 'Lab', visited: false }
+    ];
+
+    this.houses.forEach(house => {
+      const h = this.add.sprite(house.x, house.y, 'house1');
+      h.setInteractive();
+      h.on('pointerdown', () => this.visitHouse(house));
+      house.sprite = h;
+    });
+
+    // Create player (lobster)
+    this.player = this.add.sprite(640, 500, 'lobster-down');
+    this.player.setScale(2);
+
+    // Create animation for walking
+    this.anims.create({
+      key: 'walk-down',
+      frames: ['lobster-down', 'lobster-down-walk'],
+      frameRate: 8,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'walk-up',
+      frames: ['lobster-up', 'lobster-up-walk'],
+      frameRate: 8,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'walk-left',
+      frames: ['lobster-left', 'lobster-left-walk'],
+      frameRate: 8,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'walk-right',
+      frames: ['lobster-right', 'lobster-right-walk'],
+      frameRate: 8,
+      repeat: -1
+    });
+
+    // Input
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.input.keyboard.on('keydown', (event) => {
+      if (event.key === 'w' || event.key === 'W') this.movePlayer(0, -4, 'walk-up');
+      if (event.key === 's' || event.key === 'S') this.movePlayer(0, 4, 'walk-down');
+      if (event.key === 'a' || event.key === 'A') this.movePlayer(-4, 0, 'walk-left');
+      if (event.key === 'd' || event.key === 'D') this.movePlayer(4, 0, 'walk-right');
+    });
+
+    // UI
+    this.uiText = this.add.text(20, 20, '🦞 Mardy\nArrows/WASD to move', {
+      fontSize: '16px',
+      fill: '#fff',
+      backgroundColor: '#000000dd',
+      padding: { x: 10, y: 10 }
+    });
+
+    this.statusText = this.add.text(20, 100, 'Status: Exploring', {
+      fontSize: '14px',
+      fill: '#0f0',
+      fontFamily: 'monospace',
+      backgroundColor: '#000000aa',
+      padding: { x: 10, y: 10 }
+    });
+
+    // Mailbox
+    this.createMailbox();
+  }
+
+  createHouseTexture(key, wallColor, roofColor) {
+    const g = this.make.graphics({ x: 0, y: 0, add: false });
+
+    // Roof (triangle)
+    g.fillStyle(roofColor);
+    g.beginPath();
+    g.moveTo(0, 20);
+    g.lineTo(80, 0);
+    g.lineTo(160, 20);
+    g.closePath();
+    g.fillPath();
+
+    // Walls
+    g.fillStyle(wallColor);
+    g.fillRect(0, 20, 160, 80);
+
+    // Door
+    g.fillStyle(0x654321);
+    g.fillRect(65, 50, 30, 50);
+
+    // Door handle
+    g.fillStyle(0xFFD700);
+    g.fillCircle(95, 75, 3);
+
+    // Window
+    g.fillStyle(0x87CEEB);
+    g.fillRect(20, 35, 30, 25);
+    g.fillStyle(0x000);
+    g.fillRect(35, 35, 2, 25);
+    g.fillRect(20, 47, 30, 2);
+
+    g.generateTexture(key, 160, 100);
+    g.destroy();
+  }
+
+  createLobsterTextures() {
+    // Lobster facing down (idle)
+    const ld = this.make.graphics({ x: 0, y: 0, add: false });
+    ld.fillStyle(0xFF6347);
+    ld.beginPath();
+    ld.ellipse(16, 16, 8, 12, 0);
+    ld.fill();
+    ld.fillStyle(0xFF4500);
+    ld.fillRect(2, 10, 6, 5);
+    ld.fillRect(26, 10, 6, 5);
+    ld.fillStyle(0xFF6347);
+    ld.fillRect(14, 26, 4, 6);
+    ld.fillStyle(0xFFF);
+    ld.fillCircle(14, 8, 2);
+    ld.fillStyle(0x000);
+    ld.fillCircle(14, 8, 1);
+    ld.generateTexture('lobster-down', 32, 32);
+    ld.destroy();
+
+    // Lobster walking down
+    const ldw = this.make.graphics({ x: 0, y: 0, add: false });
+    ldw.fillStyle(0xFF6347);
+    ldw.beginPath();
+    ldw.ellipse(16, 15, 8, 12, 0);
+    ldw.fill();
+    ldw.fillStyle(0xFF4500);
+    ldw.fillRect(0, 8, 5, 6);
+    ldw.fillRect(27, 12, 5, 6);
+    ldw.fillStyle(0xFF6347);
+    ldw.fillRect(14, 25, 4, 7);
+    ldw.fillStyle(0xFFF);
+    ldw.fillCircle(14, 7, 2);
+    ldw.generateTexture('lobster-down-walk', 32, 32);
+    ldw.destroy();
+
+    // Lobster facing up
+    const lu = this.make.graphics({ x: 0, y: 0, add: false });
+    lu.fillStyle(0xFF6347);
+    lu.beginPath();
+    lu.ellipse(16, 18, 8, 12, 0);
+    lu.fill();
+    lu.fillStyle(0xFF4500);
+    lu.fillRect(3, 24, 6, 5);
+    lu.fillRect(23, 24, 6, 5);
+    lu.fillStyle(0xFF6347);
+    lu.fillRect(14, 2, 4, 6);
+    lu.fillStyle(0xFFF);
+    lu.fillCircle(14, 24, 2);
+    lu.generateTexture('lobster-up', 32, 32);
+    lu.destroy();
+
+    // Lobster walking up
+    const luw = this.make.graphics({ x: 0, y: 0, add: false });
+    luw.fillStyle(0xFF6347);
+    luw.beginPath();
+    luw.ellipse(16, 17, 8, 12, 0);
+    luw.fill();
+    luw.fillStyle(0xFF4500);
+    luw.fillRect(1, 22, 5, 6);
+    luw.fillRect(26, 20, 5, 6);
+    luw.fillStyle(0xFF6347);
+    luw.fillRect(14, 2, 4, 6);
+    luw.generateTexture('lobster-up-walk', 32, 32);
+    luw.destroy();
+
+    // Lobster facing left
+    const ll = this.make.graphics({ x: 0, y: 0, add: false });
+    ll.fillStyle(0xFF6347);
+    ll.beginPath();
+    ll.ellipse(18, 16, 10, 10, 0);
+    ll.fill();
+    ll.fillStyle(0xFF4500);
+    ll.fillRect(6, 8, 5, 6);
+    ll.fillStyle(0xFF6347);
+    ll.fillRect(2, 14, 6, 4);
+    ll.fillStyle(0xFFF);
+    ll.fillCircle(6, 12, 2);
+    ll.generateTexture('lobster-left', 32, 32);
+    ll.destroy();
+
+    // Lobster walking left
+    const llw = this.make.graphics({ x: 0, y: 0, add: false });
+    llw.fillStyle(0xFF6347);
+    llw.beginPath();
+    llw.ellipse(17, 16, 10, 10, 0);
+    llw.fill();
+    llw.fillStyle(0xFF4500);
+    llw.fillRect(4, 6, 5, 6);
+    llw.fillRect(4, 22, 5, 6);
+    llw.fillStyle(0xFF6347);
+    llw.fillRect(2, 14, 6, 4);
+    llw.generateTexture('lobster-left-walk', 32, 32);
+    llw.destroy();
+
+    // Lobster facing right
+    const lr = this.make.graphics({ x: 0, y: 0, add: false });
+    lr.fillStyle(0xFF6347);
+    lr.beginPath();
+    lr.ellipse(14, 16, 10, 10, 0);
+    lr.fill();
+    lr.fillStyle(0xFF4500);
+    lr.fillRect(21, 8, 5, 6);
+    lr.fillStyle(0xFF6347);
+    lr.fillRect(24, 14, 6, 4);
+    lr.fillStyle(0xFFF);
+    lr.fillCircle(26, 12, 2);
+    lr.generateTexture('lobster-right', 32, 32);
+    lr.destroy();
+
+    // Lobster walking right
+    const lrw = this.make.graphics({ x: 0, y: 0, add: false });
+    lrw.fillStyle(0xFF6347);
+    lrw.beginPath();
+    lrw.ellipse(15, 16, 10, 10, 0);
+    lrw.fill();
+    lrw.fillStyle(0xFF4500);
+    lrw.fillRect(23, 6, 5, 6);
+    lrw.fillRect(23, 22, 5, 6);
+    lrw.fillStyle(0xFF6347);
+    lrw.fillRect(24, 14, 6, 4);
+    lrw.generateTexture('lobster-right-walk', 32, 32);
+    lrw.destroy();
+  }
+
+  createMailbox() {
+    const mb = this.make.graphics({ x: 0, y: 0, add: false });
+    mb.fillStyle(0xFF0000);
+    mb.fillRect(0, 0, 40, 25);
+    mb.fillStyle(0xFFD700);
+    mb.fillRect(2, 2, 36, 21);
+    mb.generateTexture('mailbox', 40, 25);
+    mb.destroy();
+
+    this.add.sprite(60, 80, 'mailbox');
+  }
+
+  movePlayer(vx, vy, anim) {
+    this.player.x += vx;
+    this.player.y += vy;
+
+    // Boundary check
+    if (this.player.x < 20) this.player.x = 20;
+    if (this.player.x > 1260) this.player.x = 1260;
+    if (this.player.y < 20) this.player.y = 20;
+    if (this.player.y > 700) this.player.y = 700;
+
+    this.player.play(anim);
+  }
+
+  visitHouse(house) {
+    const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, house.x, house.y);
+    
+    if (distance < 150) {
+      house.visited = true;
+      this.statusText.setText(`Status: Visited ${house.name}!`);
+      
+      // Highlight house
+      house.sprite.setTint(0x88ff88);
+      
+      setTimeout(() => {
+        house.sprite.clearTint();
+      }, 1000);
+    } else {
+      this.statusText.setText(`Status: Too far from ${house.name}`);
+    }
+  }
+
+  update() {
+    this.player.setVelocity(0, 0);
+
+    if (this.cursors.left.isDown) {
+      this.movePlayer(-3, 0, 'walk-left');
+    } else if (this.cursors.right.isDown) {
+      this.movePlayer(3, 0, 'walk-right');
+    } else if (this.cursors.up.isDown) {
+      this.movePlayer(0, -3, 'walk-up');
+    } else if (this.cursors.down.isDown) {
+      this.movePlayer(0, 3, 'walk-down');
+    } else {
+      this.player.stop();
+    }
+  }
+}
+</script>
+</body>
+</html>

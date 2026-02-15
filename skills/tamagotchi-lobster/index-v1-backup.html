@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦞 OpenClaw Tamagotchi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .container {
+            background: rgba(0, 0, 0, 0.6);
+            border: 4px solid #4a90e2;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .lobster-container {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #4a90e2;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        
+        .lobster-container:hover {
+            transform: scale(1.05);
+        }
+        
+        .lobster-container:active {
+            transform: scale(0.95);
+        }
+        
+        #lobster {
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            width: 64px;
+            height: 128px;
+            margin: 0 auto;
+        }
+        
+        .bounce {
+            animation: bounce 0.5s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            25% { transform: translateY(-20px); }
+            50% { transform: translateY(-10px); }
+            75% { transform: translateY(-15px); }
+        }
+        
+        .stats {
+            margin-bottom: 15px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .stat-label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .stat-value {
+            font-size: 16px;
+            color: #4af;
+        }
+        
+        .health-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b 0%, #4ecdc4 50%, #44cf6c 100%);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 10px;
+            background: rgba(74, 144, 226, 0.3);
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .pet-count {
+            text-align: center;
+            font-size: 12px;
+            color: #ffa;
+            margin-top: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">🦞 OpenClaw Tamagotchi</div>
+        
+        <div class="status" id="status">Initializing...</div>
+        
+        <div class="lobster-container" id="lobsterContainer" onclick="petLobster()">
+            <img id="lobster" src="assets/idle.png" alt="Lobster">
+            <div class="pet-count" id="petCount">Pets: 0</div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-row">
+                <span class="stat-label">⚡ Health</span>
+                <span class="stat-value" id="health">100%</span>
+            </div>
+            <div class="health-bar">
+                <div class="health-fill" id="healthBar" style="width: 100%"></div>
+            </div>
+            
+            <div class="stat-row">
+                <span class="stat-label">📋 Tasks</span>
+                <span class="stat-value" id="tasks">0</span>
+            </div>
+            
+            <div class="stat-row">
+                <span class="stat-label">💰 ETH Balance</span>
+                <span class="stat-value" id="eth">0.0000</span>
+            </div>
+            
+            <div class="stat-row">
+                <span class="stat-label">🔄 Sessions</span>
+                <span class="stat-value" id="sessions">0</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Click the lobster to pet it! 🦞<br>
+            Last update: <span id="lastUpdate">never</span>
+        </div>
+    </div>
+
+    <script>
+        let petCounter = 0;
+        let health = 100;
+        let isActive = false;
+        let walkFrame = false;
+        let walkInterval = null;
+        
+        const lobsterImg = document.getElementById('lobster');
+        const lobsterContainer = document.getElementById('lobsterContainer');
+        const healthBar = document.getElementById('healthBar');
+        const healthText = document.getElementById('health');
+        const statusText = document.getElementById('status');
+        const tasksText = document.getElementById('tasks');
+        const ethText = document.getElementById('eth');
+        const sessionsText = document.getElementById('sessions');
+        const petCountText = document.getElementById('petCount');
+        const lastUpdateText = document.getElementById('lastUpdate');
+        
+        function petLobster() {
+            petCounter++;
+            petCountText.textContent = `Pets: ${petCounter} 💕`;
+            
+            // Bounce animation
+            lobsterContainer.classList.remove('bounce');
+            void lobsterContainer.offsetWidth; // Trigger reflow
+            lobsterContainer.classList.add('bounce');
+            
+            // Show excited state
+            lobsterImg.src = 'assets/excited.png';
+            
+            // Increase health slightly
+            health = Math.min(100, health + 5);
+            updateHealth();
+            
+            setTimeout(() => {
+                if (isActive) {
+                    startWalking();
+                } else {
+                    lobsterImg.src = 'assets/idle.png';
+                }
+                lobsterContainer.classList.remove('bounce');
+            }, 500);
+        }
+        
+        function updateHealth() {
+            healthBar.style.width = health + '%';
+            healthText.textContent = health.toFixed(0) + '%';
+        }
+        
+        function startWalking() {
+            if (walkInterval) return;
+            
+            walkInterval = setInterval(() => {
+                walkFrame = !walkFrame;
+                lobsterImg.src = walkFrame ? 'assets/walking.png' : 'assets/idle.png';
+            }, 500);
+        }
+        
+        function stopWalking() {
+            if (walkInterval) {
+                clearInterval(walkInterval);
+                walkInterval = null;
+            }
+        }
+        
+        function goToSleep() {
+            stopWalking();
+            lobsterImg.src = 'assets/sleeping.png';
+        }
+        
+        async function fetchOpenClawData() {
+            try {
+                // Fetch sessions data
+                const response = await fetch('/api/sessions_list');
+                const data = await response.json();
+                
+                if (data && data.sessions) {
+                    const sessionCount = data.sessions.length;
+                    sessionsText.textContent = sessionCount;
+                    
+                    // Check if there are active sessions
+                    const hasActiveSessions = sessionCount > 0;
+                    
+                    if (hasActiveSessions && !isActive) {
+                        isActive = true;
+                        statusText.textContent = '🏃 Active - Lobster is working!';
+                        startWalking();
+                        health = Math.min(100, health + 2);
+                    } else if (!hasActiveSessions && isActive) {
+                        isActive = false;
+                        statusText.textContent = '💤 Idle - Lobster is resting';
+                        goToSleep();
+                        health = Math.max(0, health - 1);
+                    }
+                    
+                    updateHealth();
+                    
+                    // Simulate task counter (count sessions as tasks)
+                    tasksText.textContent = sessionCount;
+                }
+                
+                // Simulate ETH balance (would need actual wallet integration)
+                const mockETH = (Math.random() * 0.1).toFixed(4);
+                ethText.textContent = mockETH;
+                
+                lastUpdateText.textContent = new Date().toLocaleTimeString();
+                
+            } catch (error) {
+                console.error('Failed to fetch OpenClaw data:', error);
+                statusText.textContent = '⚠️ Connection error';
+                
+                // If can't reach API, assume idle
+                if (isActive) {
+                    isActive = false;
+                    goToSleep();
+                }
+            }
+        }
+        
+        // Health decay over time
+        setInterval(() => {
+            if (health > 0) {
+                health = Math.max(0, health - 0.5);
+                updateHealth();
+            }
+            
+            if (health < 30 && isActive) {
+                statusText.textContent = '😰 Low health! Pet me!';
+            }
+        }, 30000); // Decay every 30 seconds
+        
+        // Fetch data every 5 seconds
+        setInterval(fetchOpenClawData, 5000);
+        
+        // Initial fetch
+        fetchOpenClawData();
+        
+        // Set initial state
+        statusText.textContent = '👋 Hello! Pet me to start!';
+    </script>
+</body>
+</html>

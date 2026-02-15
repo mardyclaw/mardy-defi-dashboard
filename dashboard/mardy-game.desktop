@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Mardy's Village
+Exec=bash /home/mardy/.openclaw/workspace/dashboard/start-game.sh
+StartupNotify=false
+Terminal=false
+Categories=Game;
