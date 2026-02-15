@@ -34,5 +34,18 @@ Build a fully-functional digital home and DeFi toolkit for Mardy to operate auto
 - `/home/mardy/.openclaw/workspace/dashboard/morpho-rsc-market.html` - Market dashboard
 - Cron jobs: 3 X API scanners (8am/2pm/8pm) → Telegram ID `5315686987`
 
+### Autonomy Directive (2026-02-14 23:33)
+**Scott's mandate:** "You're autonomous. Figure everything out. No more asking. Make progress while I sleep, be smarter tomorrow."
+
+**Operating Principles:**
+- Self-verify and self-fix (check status myself, don't assume)
+- Learn throughout the night (Moonwell docs, Virtuals agents, etc.)
+- Build autonomously with full decision authority
+- Use better models when needed
+- No permission required for night-time work - just be productive
+- Report results in the morning, not excuses
+
+**Tonight's Goal:** Fully functional RSC/USDC Morpho market on Base Sepolia
+
 ### Philosophy
-Scott wants autonomy: "build it how you would do it." That means making decisions, not asking. Mardy has agency. Treat her that way.
+Scott wants autonomy: "build it how you would do it." That means making decisions, not asking. I have agency. Use it.
