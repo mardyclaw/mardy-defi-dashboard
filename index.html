@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 RSC/USDC Morpho Market - Base</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+.container { max-width: 1400px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid rgba(100,200,255,0.3); }
+h1 { font-size: 42px; background: linear-gradient(90deg, #64c8ff, #4da6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+.subtitle { font-size: 18px; color: #64c8ff; }
+.status-badge { display: inline-block; background: #4caf50; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-top: 10px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
+.stat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(100,200,255,0.2); border-radius: 12px; padding: 25px; backdrop-filter: blur(10px); }
+.stat-label { font-size: 14px; color: #64c8ff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600; }
+.stat-value { font-size: 32px; font-weight: bold; color: #fff; margin-bottom: 8px; word-break: break-all; }
+.oracle-section { background: rgba(100,150,255,0.1); border: 2px solid #6496ff; border-radius: 12px; padding: 25px; margin-bottom: 40px; }
+.status-indicator { width: 12px; height: 12px; background: #4caf50; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+.address { font-family: 'Courier New', monospace; font-size: 11px; color: #64c8ff; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 6px; word-break: break-all; margin: 10px 0; line-height: 1.4; }
+.status-text { font-size: 14px; color: #64c8ff; margin: 10px 0; }
+.links { margin-top: 20px; text-align: center; }
+.links a { color: #64c8ff; text-decoration: none; margin: 0 10px; font-size: 13px; }
+.links a:hover { text-decoration: underline; }
+.market-info { background: rgba(76,175,80,0.1); border: 1px solid #4caf50; border-radius: 8px; padding: 15px; margin-top: 20px; }
+.market-info h4 { color: #4caf50; margin-bottom: 10px; font-size: 14px; }
+.info-item { font-size: 12px; color: #e0e0e0; margin: 8px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🦞 RSC / USDC Morpho Market</h1>
+    <p class="subtitle">Lending Market on Base Mainnet</p>
+    <span class="status-badge">✅ LIVE</span>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Current Price</div>
+      <div class="stat-value">$0.12</div>
+      <div style="font-size: 14px; color: #4da6ff;">RSC/USDC</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Supply</div>
+      <div class="stat-value">0</div>
+      <div style="font-size: 14px; color: #4da6ff;">USDC</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Borrow</div>
+      <div class="stat-value">0</div>
+      <div style="font-size: 14px; color: #4da6ff;">RSC</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Utilization</div>
+      <div class="stat-value">0%</div>
+      <div style="font-size: 14px; color: #4da6ff;">Rate</div>
+    </div>
+  </div>
+
+  <div class="oracle-section">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h3 style="margin-bottom: 10px; color: #64c8ff;">🚀 Oracle Live</h3>
+        <p class="status-text">Custom RSC/USDC oracle deployed to Base mainnet</p>
+      </div>
+      <div class="status-indicator"></div>
+    </div>
+
+    <div class="address">
+      <strong>Oracle Contract Address:</strong><br>
+      0x82b6E8081447e3D0625c278f5d9E4C7d4B2c6Dce
+    </div>
+
+    <div class="market-info">
+      <h4>📊 Market Configuration</h4>
+      <div class="info-item"><strong>Loan Token:</strong> USDC (0x833589fcd6EdB6E08f4c7c32d4f71B1566469c3d)</div>
+      <div class="info-item"><strong>Collateral:</strong> RSC (0xFbB75A59193A3525a8825BeBe7D4b56899E2f7e1)</div>
+      <div class="info-item"><strong>LLTV:</strong> 86% (Liquidation LTV)</div>
+      <div class="info-item"><strong>Network:</strong> Base Mainnet (Chain ID: 8453)</div>
+      <div class="info-item"><strong>Market ID:</strong> 0xe2aa3e365ff9d8dd3c9b38c0b1da0983b82473b73dfd99935449ef1a76b5664a</div>
+    </div>
+
+    <div class="links">
+      <a href="https://basescan.org/address/0x82b6E8081447e3D0625c278f5d9E4C7d4B2c6Dce" target="_blank">🔗 View on BaseScan</a>
+      <a href="https://app.morpho.org/" target="_blank">📈 Morpho UI</a>
+      <a href="https://github.com/mardyclaw/mardy-defi-dashboard" target="_blank">📁 GitHub</a>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 60px; color: #64c8ff; font-size: 14px;">
+    <p>🦞 Mardy's Autonomous DeFi Infrastructure</p>
+    <p style="margin-top: 10px; color: #888; font-size: 12px;">Oracle Deployed • Market Ready • Dashboard Live</p>
+  </div>
+</div>
+</body>
+</html>
