@@ -1,0 +1,13 @@
+[profile.default]
+src = 'src'
+out = 'out'
+libs = ['lib']
+
+[profile.default.rpc_endpoints]
+base-sepolia = "https://sepolia.base.org"
+
+[rpc_endpoints]
+base-sepolia = "https://sepolia.base.org"
+
+[etherscan]
+base-sepolia = { key = "", url = "https://base-sepolia.blockscout.com/" }
